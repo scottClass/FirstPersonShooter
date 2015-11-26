@@ -29,10 +29,13 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
     
     private int SCREEN_HIEGHT;
     private int SCREEN_WIDTH;
+    private final int IMAGE_HEIGHT;
     
     private int centerX;
     private int centerY;
     private int hDisplacement;
+    
+    private Scene currentScene;
     
     private boolean inGame;
     private boolean escapeDown;
@@ -43,13 +46,15 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
             "invisible");
     private Robot robot;
     
-    public GameWindow() throws AWTException {
+    public GameWindow(Scene s) throws AWTException {
         hDisplacement = 0;
         SCREEN_WIDTH = 1265;
         SCREEN_HIEGHT = 945;
         centerX = SCREEN_WIDTH / 2;
         centerY = SCREEN_HIEGHT / 2;
+        IMAGE_HEIGHT = (int)(SCREEN_HIEGHT*0.9);
         
+        currentScene = s;
         inGame = true;
         
         window = new JFrame("Game");
@@ -68,9 +73,15 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
         centerMouse();
     }
     
+    public void setScene(Scene s) {
+        currentScene = s;
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
-        
+        g.drawImage(currentScene.getImage(), -hDisplacement, (SCREEN_HIEGHT-IMAGE_HEIGHT)/2, SCREEN_WIDTH, IMAGE_HEIGHT, null);
+        g.drawImage(currentScene.getLeft().getImage(), -hDisplacement-SCREEN_WIDTH, (SCREEN_HIEGHT-IMAGE_HEIGHT)/2, SCREEN_WIDTH, IMAGE_HEIGHT, null);
+        g.drawImage(currentScene.getRight().getImage(), -hDisplacement+SCREEN_WIDTH, (SCREEN_HIEGHT-IMAGE_HEIGHT)/2, SCREEN_WIDTH, IMAGE_HEIGHT, null);
     }
     
     

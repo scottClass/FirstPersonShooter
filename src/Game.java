@@ -19,7 +19,9 @@ public class Game {
      * @throws AWTException because of robot in GameWindow
      */
     private void run() throws AWTException {
-        GameWindow window = new GameWindow();
+        Scene s = new Scene("a", "IMG_001", true, 'f');
+        s.getImage();
+        GameWindow window = new GameWindow(s);
 
         boolean done = false;
         while (!done) {
