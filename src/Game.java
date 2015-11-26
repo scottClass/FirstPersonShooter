@@ -1,3 +1,6 @@
+
+import java.awt.AWTException;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,10 +14,31 @@
 public class Game {
 
     /**
-     * @param args the command line arguments
+     * Runs the game
+     *
+     * @throws AWTException because of robot in GameWindow
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    private void run() throws AWTException {
+        GameWindow window = new GameWindow();
+
+        boolean done = false;
+        while (!done) {
+            window.repaint();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
+    /**
+     * @param args the command line arguments
+     * @throws java.awt.AWTException
+     */
+    public static void main(String[] args) throws AWTException {
+        Game main = new Game();
+        main.run();
+    }
+
 }

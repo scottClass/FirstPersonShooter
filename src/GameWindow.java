@@ -1,5 +1,11 @@
 
+import java.awt.AWTException;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -24,9 +30,27 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
     private int SCREEN_HIEGHT;
     private int SCREEN_WIDTH;
     
-    public GameWindow() {
+    private int centerX;
+    private int centerY;
+    private int hDisplacement;
+    
+    private boolean inGame;
+    private boolean escapeDown;
+    
+    private Cursor invisibleCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            Toolkit.getDefaultToolkit().getImage(""),
+            new Point(0, 0),
+            "invisible");
+    private Robot robot;
+    
+    public GameWindow() throws AWTException {
+        hDisplacement = 0;
         SCREEN_WIDTH = 1265;
         SCREEN_HIEGHT = 945;
+        centerX = SCREEN_WIDTH / 2;
+        centerY = SCREEN_HIEGHT / 2;
+        
+        inGame = true;
         
         window = new JFrame("Game");
         window.add(this);
@@ -34,52 +58,129 @@ public class GameWindow extends JComponent implements KeyListener, MouseListener
         window.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HIEGHT));
         window.pack();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        robot = new Robot();
+        
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         window.addKeyListener(this);
+        hideCursor();
+        centerMouse();
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        
     }
     
     
+    /**
+     * hide cursor in window
+     */
+    private void hideCursor()
+    {
+        // set the current cursor to the invisible cursor image, which is simply an invisible image
+        this.setCursor(invisibleCursor);
+    }
     
+    /**
+     * shows the cursor for pausing.
+     */
+    private void showCursor()
+    {
+        // sets the cursor to the default cursor image (probably the white arrow)
+        this.setCursor(Cursor.getDefaultCursor());
+    }
     
-
-    @Override
-    public void keyTyped(KeyEvent ke) {
+    /**
+     * centers the mouse in the window.
+     */
+    public void centerMouse()
+    {
+        // sets the mouse location to the middle of the screen but offset due to the actual
+        // screen picture being slightly offset due to the window border and actual physical location on the screen
+        robot.mouseMove((int)this.getLocationOnScreen().getX() + centerX, (int)this.getLocationOnScreen().getY() + centerY);
+    }
+    
+    /**
+     * Displays the mouse.
+     */
+    public void displayMouse() {
+        if(inGame) {
+            centerMouse();
+            
+        }
     }
 
     @Override
-    public void keyPressed(KeyEvent ke) {
+    public void keyTyped(KeyEvent k) {
     }
 
     @Override
-    public void keyReleased(KeyEvent ke) {
+    public void keyPressed(KeyEvent k) {
+        int KeyCode = k.getKeyCode();
+        if (KeyCode == KeyEvent.VK_W && inGame) {
+            
+        } else if (KeyCode == KeyEvent.VK_A && inGame) {
+            
+        } else if (KeyCode == KeyEvent.VK_S && inGame) {
+            
+        } else if (KeyCode == KeyEvent.VK_D && inGame) {
+            
+        } else if (KeyCode == KeyEvent.VK_ESCAPE) {
+            if(!escapeDown) {
+                inGame = inGame ? false: true;
+                if(inGame) {
+                    hideCursor();
+                } else {
+                    showCursor();
+                }
+            }
+            escapeDown = true;
+        }
     }
 
     @Override
-    public void mouseClicked(MouseEvent me) {
+    public void keyReleased(KeyEvent k) {
+        int KeyCode = k.getKeyCode();
+        if(KeyCode == KeyEvent.VK_ESCAPE) {
+            escapeDown = false;
+        } 
     }
 
     @Override
-    public void mousePressed(MouseEvent me) {
+    public void mouseClicked(MouseEvent m) {
+        if(inGame) {
+            System.out.println(m.getClickCount());
+        }
     }
 
     @Override
-    public void mouseReleased(MouseEvent me) {
+    public void mousePressed(MouseEvent m) {
     }
 
     @Override
-    public void mouseEntered(MouseEvent me) {
+    public void mouseReleased(MouseEvent m) {
     }
 
     @Override
-    public void mouseExited(MouseEvent me) {
+    public void mouseEntered(MouseEvent m) {
     }
 
     @Override
-    public void mouseDragged(MouseEvent me) {
+    public void mouseExited(MouseEvent m) {
     }
 
     @Override
-    public void mouseMoved(MouseEvent me) {
+    public void mouseDragged(MouseEvent m) {
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent m) {
+        if (inGame)
+        {
+            hDisplacement += m.getX() - centerX;
+            centerMouse();
+        }
     }
 }
